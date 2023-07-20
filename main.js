@@ -1,6 +1,7 @@
 const { log } = require('console')
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, BrowserView, powerMonitor} = require('electron')
 const path = require('path')
+const { dialog, dialogApi, notificationApi, appApi } = require('./api')
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -9,94 +10,41 @@ function createWindow() {
     })
 
     win.loadFile('index.html')
+    return win
 }
-function createWindow1() {
+ function createWindow1() {
     const win = new BrowserWindow({
         width: 400,
         height: 600,
     })
-
-    win.loadFile('index.html')
+    const view = new BrowserView()
+    win.setBrowserView(view)
+    view.setBounds({ x: 20, y: 30, width: 300, height: 300 })
+    // view.setAutoResize({width:true, height: true,horizontal:true,vertical:true })
+    view.setBackgroundColor('red')
+    // view.webContents.loadURL('https://electronjs.org')
+    view.webContents.loadFile('./index.html')
+    // win.loadFile('index.html')
 }
-// app.quit()//imidiately terminate the app
-// app.exit([exitCode])
+
 app.whenReady().then(() => {
-    createWindow()
+    // createWindow()
     createWindow1()
+    // appApi()
+    // dialogApi()
+    // notificationApi()
 
-    const SystemLocale = app.getSystemLocale();
-    console.log(SystemLocale, 'SystemLocale');
-
-    const locale = app.getLocale();
-    console.log(locale, 'locale');
-
-    const LocaleCountryCode = app.getLocaleCountryCode();
-    console.log(LocaleCountryCode, 'LocaleCountryCode');
-
-    //   app.focus([])
-
-    app.on('activate', () => {//mac
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow()
-        }
+    app.on('before-quit', (event) => {
+        console.log("before-quit");
+        // event.preventDefault();
+        app.relaunch([])
+    });
+    app.setLoginItemSettings({
+        openAtLogin: true,
+        openAsHidden: false, // Set this to true if you want the app to run in the background
+      });
+    app.on('will-quit', (event) => {
+        console.log("will-quit");
     })
 })
-
-setTimeout(() => {
-    // app.quit()//it terminate the app but it execute before and after quit event
-    // app.exit([])//it terminate without ansking any thing to user does't execute event
-    //   app.focus([1])// it focused the first window created by the app
-    // app.hide()//it shows error on linux ,but in mac it Hides all application windows without minimizing them.
-    // app.show()//it shows error on linux ,but in mac it Shows application windows after they were hidden. Does not automatically focus them. 
-    // app.relaunch([])//it relaunch the app even if the app is closed ,we can sedule the autostart  
-
-}, 1000);
-
-app.on('window-all-closed', () => {
-    console.log("window-all-closed");
-    // if (process.platform !== 'darwin') {
-    //     app.quit()
-    // }
-})
-app.on('before-quit', (event) => {
-    console.log("before-quit");
-    // event.preventDefault();
-});
-app.on('will-quit', (event) => {
-    console.log("will-quit");
-    // app.relaunch([])
-})
-app.on('browser-window-blur', (a, b) => {
-    // console.log(a,'++',b,'blur');
-    console.log("browser-window-blur");
-});
-app.on('browser-window-focus', (a, b) => {
-    // console.log(a,'++',b,'focus');
-    console.log("browser-window-focus");
-});
-app.on('browser-window-created', () => {
-    console.log("browser-window-created");
-});
-app.on('web-contents-created', () => {
-    console.log("web-contents-created");
-});
-const apppath = app.getAppPath();
-console.log(apppath, ' app.getAppPath()');
-// app.setAppLogsPath('/home/mitrah159/Project/ CF0374/electron_basic_app');
-// const arr = ['home', 'appData', 'userData', 'sessionData', 'temp', 'exe', 'module', 'desktop', 'documents', 'downloads', 'music', 'pictures', 'videos', 'recent', 'logs', 'crashDumps']
-// arr.forEach((val) => {
-//     try {
-//         console.log(val, ':', app.getPath(val));
-//     } catch (error) {
-//         console.log('error', error.message);
-//     }
-// })
-const version = app.getVersion()
-console.log(version, 'version');
-// app.setName('electron_example_app')
-const Name = app.getName()
-console.log(Name, 'Name');
-
-
-
 

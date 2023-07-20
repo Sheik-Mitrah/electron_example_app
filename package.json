@@ -9,6 +9,38 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^25.3.0"
+    "electron": "^25.3.0",
+    "electron-builder": "^24.4.0"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.1"
+  },
+  "build": {
+    "appId": "com.example.com.mitra.pocapp",
+    "productName": "Electron track App",
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "icon": "assets/256x256.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "license": "LICENSE",
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "runAfterFinish": true
+    }
   }
 }
